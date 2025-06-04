@@ -1,0 +1,54 @@
+# .gitignore
+
+/database
+
+/framework-*/writable/logs/*
+/framework-*/writable/debugbar/*
+/framework-*/writable/session/*
+/framework-*/writable/cache/*
+/framework-*/writable/uploads/*
+
+yarn.lock
+package-lock.json
+.package-lock.json
+
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+## Mac ##
+**/.DS_Store
+framework-4.6.0/.env

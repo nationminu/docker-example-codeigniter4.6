@@ -1,0 +1,108 @@
+# ===============================
+# Global Configurations (Anchors)
+# ===============================
+
+# 서비스 재시작 정책 (기본적으로 컨테이너가 중지되면 다시 시작)
+x-op-restart-policy: &restart_policy
+  restart: unless-stopped
+
+# ===============================
+# Container Images
+# ===============================
+
+# Web 서비스 이미지 설정
+x-op-web-image: &web_image
+  image: handle/mes-web:${WEB_IMAGE_TAG:-latest}
+
+# Web 서비스 빌드 설정
+x-op-web-build: &web_build
+  image: "bppp/php:8.4.4-apache"
+  build:
+    context: ./
+    dockerfile: ./docker/Dockerfile
+
+# Database 서비스 (MySQL 8.4.4 기본값)
+x-op-database-image: &database_image
+  image: mysql:${TAG:-8.4.4}
+
+# Cache 서비스 (Redis 7.4.2 기본값)
+x-op-cache-image: &cache_image
+  image: redis:${TAG:-7.4.2}
+
+# Web 서비스 설정
+x-op-web: &web
+  <<: [*web_build, *restart_policy]
+  environment:
+    TZ: "Asia/Seoul"  # 한국 시간대 설정
+    DATABASE_HOST: ${MYSQL_HOST:-localhost}
+    DATABASE_USER: ${MYSQL_USER:-handle}
+    DATABASE_PASS: ${MYSQL_PASSWORD:-handle}
+    DATABASE_NAME: ${MYSQL_DATABASE:-handle_mes}
+    DATABASE_PORT: ${MYSQL_PORT:-3306}
+    CACHE_HOST: ${REDIS_HOST}
+    CACHE_PORT: ${REDIS_PORT}
+    CI_ENVIRONMENT: ${CI_ENVIRONMENT}
+    app.baseURL: ${BASE_URL}
+
+x-op-database: &database
+  <<: [*database_image, *restart_policy]
+  env_file:
+    - .env
+  environment:
+    TZ: "Asia/Seoul"
+
+x-op-cache: &cache
+  <<: [*cache_image, *restart_policy]
+  environment:
+    TZ: "Asia/Seoul"
+
+# ===============================
+# Container Services
+# ===============================
+
+services:
+  web:
+    <<: *web
+    ports:
+      - "80:80"
+    volumes:
+      - ./framework-4.6.1/:/var/www/html
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:80"]
+    #   start_period: 5s
+    #   interval: 15s
+    #   timeout: 5s
+    #   retries: 5
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    <<: *database
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/init/:/docker-entrypoint-initdb.d/
+    command: --lower_case_table_names=1 --character-set-server=utf8 --collation-server=utf8_general_ci --log_bin_trust_function_creators=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "$$MYSQL_USER", "--password=$$MYSQL_PASSWORD"]
+      start_period: 30s
+      interval: 15s
+      timeout: 30s
+      retries: 5
+
+  # Cache 서비스
+  cache:
+    <<: *cache
+    profiles: ['cache']
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./cache/data:/data:rw
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      start_period: 30s
+      interval: 15s
+      timeout: 30s
+      retries: 5
