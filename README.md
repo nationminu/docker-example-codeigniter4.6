@@ -1,4 +1,4 @@
-# handle MES
+# docker example with codeigniter 4.6.1
 
 ```
 git pull ...
@@ -35,9 +35,9 @@ CI_ENVIRONMENT=production # 수정
 # DB ENVIRONMENTS
 MYSQL_HOST=database
 MYSQL_ROOT_PASSWORD=super-ultra-strong-password
-MYSQL_USER=handle # 필요시 수정
-MYSQL_PASSWORD=handle # 필요시 수정
-MYSQL_DATABASE=handle_mes # 필요시 수정
+MYSQL_USER=illey # 필요시 수정
+MYSQL_PASSWORD=illey # 필요시 수정
+MYSQL_DATABASE=illey # 필요시 수정
 MYSQL_PORT=3306
 
 # CACHE ENVIRONMENTS
@@ -46,14 +46,14 @@ REDIS_PORT=6379
 
 # App ENVIRONMENTS
 # BASE_URL=http://localhost
-BASE_URL=https://yuilpc.bppp.site # 수정
+BASE_URL=https://clean.illey.me # 수정
 
 cd framework-4.6.1
 cp env .env
 vi .env
 # app.baseURL = ''
 
-app.baseURL = 'https://yuilpc.bppp.site'
+app.baseURL = 'https://clean.illey.me'
 ```
 
 ### 실행 & 패키지 설치 & 데이터베이스 초기화

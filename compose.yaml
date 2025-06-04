@@ -16,7 +16,7 @@ x-op-web-image: &web_image
 
 # Web 서비스 빌드 설정
 x-op-web-build: &web_build
-  image: "bppp/php:8.4.4-apache"
+  image: "illey/php:8.4.4-apache"
   build:
     context: ./
     dockerfile: ./docker/Dockerfile
