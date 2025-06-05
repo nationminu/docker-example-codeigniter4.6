@@ -17,6 +17,8 @@ class TwigCustomExtension extends AbstractExtension
             new TwigFunction('strtoupper', 'strtoupper'),
 
             new TwigFunction('getenv', 'getenv'),
+            new TwigFunction('current_url', 'current_url'),
+            new TwigFunction('base_url', 'base_url'),
             new TwigFunction('site_url', 'site_url'),
             new TwigFunction('strSlug', [$this, 'strSlug']),
 
