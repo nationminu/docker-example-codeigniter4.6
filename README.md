@@ -56,6 +56,11 @@ vi .env
 app.baseURL = 'https://clean.illey.me'
 ```
 
+### 디렉토리 권한 설정
+```
+chmod 707 framework-4.6.1/writable
+```
+
 ### 실행 & 패키지 설치 & 데이터베이스 초기화
 ```
 docker-compose up -d
